@@ -1,0 +1,39 @@
+Notes for stuff learned:
+
+Mostly for code from tests and the learning process
+code that was commented out
+
+Tkinter:
+
+- Getting pack to fit the entire screen
+# self.topFrame.pack(expand=tk.YES, side=tk.TOP, fill=tk.BOTH, anchor=tk.N)
+# self.topFrame.pack_propagate(False)
+
+# self.botFrame.pack(expand=tk.YES, side=tk.BOTTOM, fill=tk.BOTH, anchor=tk.S)
+# self.botFrame.pack_propagate(False)
+
+- Disabling pack_propagate so the small items inside don't affect the
+    size of the frame
+
+- Lambda expressions for buttons
+for x in range(4):
+    self.btns.append(
+        tk.Button(master = self.botFrame,
+        text=f"Btn{x}",
+        command = lambda x=x: ad.Adventure.btn_press(x)
+        ))
+- when used in for loop need the x=x: in order for the
+    lambda expression to keep the value at that time
+    not the ending value of x
+
+- Grid row and col configuration
+# self.window.grid_rowconfigure(0, weight=1)
+# self.window.grid_columnconfigure(0, weight=1)
+# self.window.grid_rowconfigure(1, weight=1)
+
+[2022 OCT 04, 10:30PM PST]
+- Object Oriented Analysis and Design class I really should've
+    payed more attention in class, I should use a Model-View-Controler
+    Pattern because I just ran into the problem of what happens
+    if you don't, you basically pull your hair out in frustration
+    sadgeee

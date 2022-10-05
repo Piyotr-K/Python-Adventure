@@ -8,22 +8,24 @@ MainUI is the main window
 Perhaps we have more windows later that can be added
 
 Date-Created: 2022 SEP 13
-Date-Modified: 2022 OCT 03
+Date-Last-Modified: 2022 OCT 04
 Author: Piyotr Kao
 """
 
 import tkinter as tk
+import GameState as gs
 from typing import List
 from PIL import ImageTk, Image
 
 class MainUI():
 
-    def __init__(self, _title : str, _width : int, _height : int) -> None:
+    def __init__(self, _title : str, _width : int, _height : int, _game : gs.Adventure) -> None:
         self.window : tk.Tk = tk.Tk(className=_title)
         self.window.iconbitmap("./res/imgs/favicon.ico")
         self.width : int = _width
         self.height : int = _height
         self.btns : List[tk.Button] = []
+        self.game : gs.Adventure = _game
         self.setup()
     
     def setup(self) -> None:
@@ -36,23 +38,17 @@ class MainUI():
         self.mainmenu()
     
     def mainmenu(self) -> None:
-        self.window.grid_rowconfigure(0, weight=1)
-        self.window.grid_columnconfigure(0, weight=1)
-        self.window.grid_rowconfigure(1, weight=1)
+        self.set_row_col(self.window, "2x1")
+
         self.topFrame = tk.Frame(master=self.window,
                                 bg="darkgrey")
-        self.topFrame.grid(sticky="nesw")
+        self.topFrame.grid(row=0, column=0,sticky="nesw")
         self.topFrame.grid_propagate(False)
-        self.topFrame.grid_rowconfigure(0, weight=1)
-        # self.topFrame.pack(expand=tk.YES, side=tk.TOP, fill=tk.BOTH, anchor=tk.N)
-        # self.topFrame.pack_propagate(False)
 
         self.botFrame = tk.Frame(master=self.window,
-                                bg="maroon")
-        self.botFrame.grid(sticky="nesw")
+                                bg="lightgrey")
+        self.botFrame.grid(row=1, column=0,sticky="nesw")
         self.botFrame.grid_propagate(False)
-        # self.botFrame.pack(expand=tk.YES, side=tk.BOTTOM, fill=tk.BOTH, anchor=tk.S)
-        # self.botFrame.pack_propagate(False)
 
         self.addImgL(0.1, "./res/imgs/zux.png")
 
@@ -77,22 +73,27 @@ class MainUI():
                 x.grid_forget()
             self.btns.clear()
         
-        self.btns.append(
-            tk.Button(master = self.botFrame,
-            text="Press For Lel",
-            command=self.displayText))
+        # set botFrame to a 2x2 grid
+        self.set_row_col(self.botFrame, "2x2")
+
+        options = ["Attack", "Defend", "Bag", "Run"]
+        btn_font = ("Consolas", 15)
         
-        self.btns.append(
-            tk.Button(master = self.botFrame,
-            text="Press For Lel2",
-            command=self.displayText))
+        # Need the lambda default keyword expressions
+        for x in range(4):
+            self.btns.append(
+                tk.Button(master = self.botFrame,
+                text=options[x],
+                font=btn_font,
+                command = lambda x=x: self.game.eval_btn(x)))
+
+        p_x = 40
+        p_y = 20
         
-        self.btns[0].grid(row=0,column=0, sticky="w")
-        self.btns[1].grid(row=0, column=1, sticky="e")
-        self.window.update()
-    
-    def displayText(self) -> None:
-        print("Lel")
+        self.btns[0].grid(row=0,column=0, sticky="nesw", padx=p_x, pady=p_y)
+        self.btns[1].grid(row=0, column=1, sticky="nesw", padx=p_x, pady=p_y)
+        self.btns[2].grid(row=1, column=0, sticky="nesw", padx=p_x, pady=p_y)
+        self.btns[3].grid(row=1, column=1, sticky="nesw", padx=p_x, pady=p_y)
     
     def addImgC(self, _x : int, _y : int, _size : float,  _pos : tk.ANCHOR, _img : str) -> None:
         tmp_img = Image.open(_img)
@@ -107,3 +108,18 @@ class MainUI():
     
     def mainloop(self) -> None:
         self.window.mainloop()
+    
+    def set_row_col(self, _f : tk.Frame, _RowCols : str) -> None:
+        """
+        Sets up the given frame giving 1 weigth to the total number of cols
+        and rows desired
+        """
+        r, c = _RowCols.split("x")
+        r = int(r)
+        c = int(c)
+
+        for x in range(r):
+            _f.grid_rowconfigure(x, weight=1)
+        
+        for x in range(c):
+            _f.grid_columnconfigure(x, weight=1)

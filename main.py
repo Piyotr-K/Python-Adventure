@@ -1,8 +1,8 @@
-import Adventure as A
+import Controllers as C
 
 def start():
     print("Game Start")
-    game = A.Adventure()
+    game = C.GameController()
     game.start()
     
 
