@@ -1,5 +1,5 @@
 """
-Adventure.py
+Controllers.py
 
 Simple textbased adventure game with simple UI
 and combat and stuff
@@ -7,7 +7,7 @@ and combat and stuff
 The Controller
 
 Date-Created: 2022 SEP 13
-Date-Last-Modified: 2022 OCT 04
+Date-Last-Modified: 2022 OCT 12
 Author: Piyotr Kao
 """
 import UI

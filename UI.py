@@ -8,7 +8,7 @@ MainUI is the main window
 Perhaps we have more windows later that can be added
 
 Date-Created: 2022 SEP 13
-Date-Last-Modified: 2022 OCT 04
+Date-Last-Modified: 2022 OCT 12
 Author: Piyotr Kao
 """
 
@@ -35,9 +35,9 @@ class MainUI():
         y = (sh // 2) - (self.height // 2)
 
         self.window.geometry(f"{self.width}x{self.height}+{x}+{y}")
-        self.mainmenu()
+        self.combatMenu()
     
-    def mainmenu(self) -> None:
+    def combatMenu(self) -> None:
         self.set_row_col(self.window, "2x1")
 
         self.topFrame = tk.Frame(master=self.window,
