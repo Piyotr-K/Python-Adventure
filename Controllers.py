@@ -7,7 +7,7 @@ and combat and stuff
 The Controller
 
 Date-Created: 2022 SEP 13
-Date-Last-Modified: 2022 OCT 12
+Date-Last-Modified: 2022 OCT 27
 Author: Piyotr Kao
 """
 import UI
@@ -20,7 +20,6 @@ class GameController():
         self.ui = UI.MainUI("Fun Game", 500, 500, self.ad)
     
     def start(self) -> None:
-        self.ui.createMenu1()
         self.ui.mainloop()
     
     @staticmethod

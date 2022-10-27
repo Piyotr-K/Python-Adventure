@@ -8,7 +8,7 @@ MainUI is the main window
 Perhaps we have more windows later that can be added
 
 Date-Created: 2022 SEP 13
-Date-Last-Modified: 2022 OCT 12
+Date-Last-Modified: 2022 OCT 27
 Author: Piyotr Kao
 """
 
@@ -18,6 +18,8 @@ from typing import List
 from PIL import ImageTk, Image
 
 class MainUI():
+
+    gameTitle : str = "Super Fun Game Please Play"
 
     def __init__(self, _title : str, _width : int, _height : int, _game : gs.Adventure) -> None:
         self.window : tk.Tk = tk.Tk(className=_title)
@@ -35,7 +37,36 @@ class MainUI():
         y = (sh // 2) - (self.height // 2)
 
         self.window.geometry(f"{self.width}x{self.height}+{x}+{y}")
-        self.combatMenu()
+        self.mainMenu()
+        # self.combatMenu()
+    
+    def mainMenu(self) -> None:
+        bg_color = "darkgrey"
+        self.set_row_col(self.window, "1x1")
+        self.topFrame : tk.Frame = tk.Frame(master = self.window, bg=bg_color)
+        self.title : tk.Label = tk.Label(master = self.topFrame,
+                                        text=MainUI.gameTitle,
+                                        font=("Consolas", 20),
+                                        bg=bg_color)
+        self.btn_play : tk.Button = tk.Button(master = self.topFrame,
+                                        text="Play Now!",
+                                        font=("Consolas", 16),
+                                        borderwidth=5)
+
+        self.btn_quit : tk.Button = tk.Button(master = self.topFrame,
+                                        text="no :(",
+                                        font=("Consolas", 16),
+                                        borderwidth=5,
+                                        command=self.exit)
+        
+        self.topFrame.grid(row=0,column=0, sticky="nesw")
+        self.topFrame.grid_propagate(False)
+
+        self.title.place(relx=.5,rely=.4,anchor="c")
+
+        self.btn_play.place(relx=.5,rely=.5,anchor="c")
+
+        self.btn_quit.place(relx=.5,rely=.8,anchor="c")
     
     def combatMenu(self) -> None:
         self.set_row_col(self.window, "2x1")
@@ -51,6 +82,8 @@ class MainUI():
         self.botFrame.grid_propagate(False)
 
         self.addImgL(0.1, "./res/imgs/zux.png")
+
+        self.createMenu1()
 
         # self.canvas_w = self.width - 20
         # self.canvas_h = self.height // 2
@@ -108,6 +141,11 @@ class MainUI():
     
     def mainloop(self) -> None:
         self.window.mainloop()
+    
+    def exit(self) -> None:
+        print("Game Closing...")
+        print("Bye!")
+        self.window.destroy()
     
     def set_row_col(self, _f : tk.Frame, _RowCols : str) -> None:
         """
