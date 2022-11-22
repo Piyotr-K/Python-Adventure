@@ -11,11 +11,9 @@ Includes main combat loop as well (for now)
 - Combat loop on separate thread test(?)
 
 Date-Created: 2022 OCT 04
-Date-Last-Modified: 2022 OCT 12
+Date-Last-Modified: 2022 NOV 21
 Author: Piyotr Kao
 """
-
-from cmath import log
 import threading as th
 import time as ti
 import Settings as S
@@ -40,7 +38,3 @@ class Adventure():
             print(self.e)
         elif _id == 1:
             pass
-            
-    
-    # def game_update(self) -> None:
-    #     self.eval_btn()
