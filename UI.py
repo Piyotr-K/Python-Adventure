@@ -8,7 +8,7 @@ MainUI is the main window
 Perhaps we have more windows later that can be added
 
 Date-Created: 2022 SEP 13
-Date-Last-Modified: 2022 OCT 27
+Date-Last-Modified: 2022 NOV 21
 Author: Piyotr Kao
 """
 
@@ -17,7 +17,41 @@ import GameState as gs
 from typing import List
 from PIL import ImageTk, Image
 
+class Screen():
+    
+    id : int = 0
+
+    def __init__(self, _parent : tk.Widget) -> None:
+        """
+        Takes the parent
+        """
+        Screen.id += 1
+        self.parent : tk.Widget = _parent
+    
+    def set_row_col(self, _f : tk.Frame, _RowCols : str) -> None:
+        """
+        Sets up the given frame giving 1 weigth to the total number of cols
+        and rows desired
+        """
+        r, c = _RowCols.split("x")
+        r = int(r)
+        c = int(c)
+
+        for x in range(r):
+            _f.grid_rowconfigure(x, weight=1)
+        
+        for x in range(c):
+            _f.grid_columnconfigure(x, weight=1)
+
+class MainMenu(Screen):
+
+    def __init__(self, _parent : tk.Widget) -> None:
+        super().__init__(_parent)
+
 class MainUI():
+    """
+    Contains the root of the tkinter object
+    """
 
     gameTitle : str = "Super Fun Game Please Play"
 
@@ -28,6 +62,9 @@ class MainUI():
         self.height : int = _height
         self.btns : List[tk.Button] = []
         self.game : gs.Adventure = _game
+        self.currFrame : tk.Frame = tk.Frame(master=self.window, width=_width, height=_height)
+        self.currFrame.grid(row=0,column=0)
+        self.currFrame.grid_propagate(False)
         self.setup()
     
     def setup(self) -> None:
@@ -38,12 +75,12 @@ class MainUI():
 
         self.window.geometry(f"{self.width}x{self.height}+{x}+{y}")
         self.mainMenu()
-        # self.combatMenu()
+        # self.combatMenu(self.currFrame)
     
     def mainMenu(self) -> None:
         bg_color = "darkgrey"
-        self.set_row_col(self.window, "1x1")
-        self.topFrame : tk.Frame = tk.Frame(master = self.window, bg=bg_color)
+        self.set_row_col(self.currFrame, "1x1")
+        self.topFrame = tk.Frame(master=self.currFrame, bg=bg_color)
         self.title : tk.Label = tk.Label(master = self.topFrame,
                                         text=MainUI.gameTitle,
                                         font=("Consolas", 20),
@@ -51,7 +88,8 @@ class MainUI():
         self.btn_play : tk.Button = tk.Button(master = self.topFrame,
                                         text="Play Now!",
                                         font=("Consolas", 16),
-                                        borderwidth=5)
+                                        borderwidth=5,
+                                        command=lambda : self.change_screens(self.currFrame))
 
         self.btn_quit : tk.Button = tk.Button(master = self.topFrame,
                                         text="no :(",
@@ -68,15 +106,14 @@ class MainUI():
 
         self.btn_quit.place(relx=.5,rely=.8,anchor="c")
     
-    def combatMenu(self) -> None:
-        self.set_row_col(self.window, "2x1")
-
-        self.topFrame = tk.Frame(master=self.window,
+    def combatMenu(self, _w : tk.Frame) -> None:
+        self.set_row_col(_w, "2x1")
+        self.topFrame = tk.Frame(master=_w,
                                 bg="darkgrey")
         self.topFrame.grid(row=0, column=0,sticky="nesw")
         self.topFrame.grid_propagate(False)
 
-        self.botFrame = tk.Frame(master=self.window,
+        self.botFrame = tk.Frame(master=_w,
                                 bg="lightgrey")
         self.botFrame.grid(row=1, column=0,sticky="nesw")
         self.botFrame.grid_propagate(False)
@@ -98,7 +135,7 @@ class MainUI():
         resized = tmp_img.resize((c_w, c_h),  Image.ANTIALIAS)
         self.img = ImageTk.PhotoImage(resized)
         self.lbl = tk.Label(master=self.topFrame, image=self.img)
-        self.lbl.pack()
+        self.lbl.place(relx=.5, rely=.5, anchor="c")
     
     def createMenu1(self) -> bool:
         if self.btns != []:
@@ -118,7 +155,7 @@ class MainUI():
                 tk.Button(master = self.botFrame,
                 text=options[x],
                 font=btn_font,
-                command = lambda x=x: self.game.eval_btn(x)))
+                command = lambda _x=x: self.game.eval_btn(_x)))
 
         p_x = 40
         p_y = 20
@@ -147,9 +184,35 @@ class MainUI():
         print("Bye!")
         self.window.destroy()
     
+    def clear(self, _w : tk.Widget, _hard : bool = False) -> None:
+        """
+        Clear all widgets from _w, if _hard is enabled, it will destroy() all widgets
+        """
+
+        # Necessary because widget.children returns the widget itself
+        _w = list(_w.children.values())[0] # get the widget's children by going 1 layer deeper
+
+        while list(_w.children.values()) != []:
+            key, value = list(_w.children.items())[0] # Delete using pop() from the front
+            # print(f"Key: {key}, Value: {value}")
+            tmp : tk.Widget = _w.children.pop(key)
+            if _hard:
+                tmp.destroy()
+
+    
+    def test_combat(self) -> None:
+        self.change_screens(self.currFrame, self.mainMenu())
+
+    def change_screens(self, _frame : tk.Frame) -> None:
+        """
+        Changes "screens" by way of forgetting the old frame and setting the new one
+        """
+        self.clear(_frame, True)
+        self.combatMenu(_frame)
+    
     def set_row_col(self, _f : tk.Frame, _RowCols : str) -> None:
         """
-        Sets up the given frame giving 1 weigth to the total number of cols
+        Sets up the given frame giving 1 weight to the total number of cols
         and rows desired
         """
         r, c = _RowCols.split("x")
