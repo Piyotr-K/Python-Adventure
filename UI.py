@@ -8,12 +8,14 @@ MainUI is the main window
 Perhaps we have more windows later that can be added
 
 Date-Created: 2022 SEP 13
-Date-Last-Modified: 2022 NOV 21
+Date-Last-Modified: 2022 NOV 22
 Author: Piyotr Kao
 """
 
 import tkinter as tk
 import GameState as gs
+import Settings as se
+import AudioController as au
 from typing import List
 from PIL import ImageTk, Image
 
@@ -88,6 +90,9 @@ class MainMenu(Screen):
         self.topFrame.grid(row=0,column=0, sticky="nesw")
         self.topFrame.grid_propagate(False)
 
+        au.stop(0)
+        au.play(0, se.game_volume, True)
+
 class CombatMenu(Screen):
     """
     Class representing the combat screen
@@ -100,9 +105,11 @@ class CombatMenu(Screen):
     
     def setup(self) -> None:
         self.topFrame = tk.Frame(master=self.parent,
+                                height=se.game_h // 2,
                                 bg="darkgrey")
 
         self.botFrame = tk.Frame(master=self.parent,
+                                height=se.game_h // 2,
                                 bg="lightgrey")
         
         self.addImgL(0.1, "./res/imgs/zux.png")
@@ -149,6 +156,9 @@ class CombatMenu(Screen):
         self.botFrame.grid(row=1, column=0,sticky="nesw")
         self.botFrame.grid_propagate(False)
 
+        au.stop(se.fade_time)
+        au.play(1, se.game_volume, True)
+
 class MainUI():
     """
     Contains the root of the tkinter object
@@ -190,7 +200,7 @@ class MainUI():
         for i in range(len(tmp2.btns)):
             tmp2.btns[i].configure(command=lambda x=i: self.game.eval_btn(x))
         
-        print(tmp2.btns)
+        # print(tmp2.btns)
         
         self.Screens[0].show()
         # self.mainMenu()
@@ -212,6 +222,7 @@ class MainUI():
     def exit(self) -> None:
         print("Game Closing...")
         print("Bye!")
+        au.stop(200)
         self.window.destroy()
     
     def clear(self, _w : tk.Frame, _hard : bool = False) -> None:
@@ -239,18 +250,3 @@ class MainUI():
         """
         self.clear(self.Screens[_scNumStart].parent, False)
         self.Screens[_scNumRes].show()
-    
-    def set_row_col(self, _f : tk.Frame, _RowCols : str) -> None:
-        """
-        Sets up the given frame giving 1 weight to the total number of cols
-        and rows desired
-        """
-        r, c = _RowCols.split("x")
-        r = int(r)
-        c = int(c)
-
-        for x in range(r):
-            _f.grid_rowconfigure(x, weight=1)
-        
-        for x in range(c):
-            _f.grid_columnconfigure(x, weight=1)

@@ -6,10 +6,11 @@ Actors and characters in the game
 such as, player, enemy and whatever else
 
 Date-Created: 2022 OCT 10
-Date-Last-Modified: 2022 OCT 12
+Date-Last-Modified: 2022 NOV 22
 Author: Piyotr Kao
 """
-import Settings as S
+import random as rand
+import typing as type
 
 class Actor():
 
@@ -47,10 +48,10 @@ class Player(Actor):
 
     def __init__(self, _name : str, _maxHp : int) -> None:
         super().__init__(_name, _maxHp)
-        self.items : S.type.List[str] = []
+        self.items : type.List[str] = []
     
     def attack(self, _target : Actor) -> None:
-        _target.damage(S.rand.randint(7,20))
+        _target.damage(rand.randint(7,20))
     
     def defend(self, _dmg : int) -> None:
         """

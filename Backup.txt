@@ -92,3 +92,18 @@ def createMenu1(self) -> bool:
     self.btns[1].grid(row=0, column=1, sticky="nesw", padx=p_x, pady=p_y)
     self.btns[2].grid(row=1, column=0, sticky="nesw", padx=p_x, pady=p_y)
     self.btns[3].grid(row=1, column=1, sticky="nesw", padx=p_x, pady=p_y)
+
+def set_row_col(self, _f : tk.Frame, _RowCols : str) -> None:
+    """
+    Sets up the given frame giving 1 weight to the total number of cols
+    and rows desired
+    """
+    r, c = _RowCols.split("x")
+    r = int(r)
+    c = int(c)
+
+    for x in range(r):
+        _f.grid_rowconfigure(x, weight=1)
+    
+    for x in range(c):
+        _f.grid_columnconfigure(x, weight=1)
